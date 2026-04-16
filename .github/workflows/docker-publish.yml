@@ -3,12 +3,11 @@ name: Build and Push Backend Image
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - 'backend/**'
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  # Itt kényszerítjük a kisbetűs nevet, mert a Docker csak így fogadja el
+  IMAGE_NAME: ichigekihissatsu/fullstack-k8s-project-backend
 
 jobs:
   build-and-push:
@@ -34,5 +33,5 @@ jobs:
           context: ./backend/MyBackendAPI
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:${{ github.sha }}
+            ghcr.io/${{ env.IMAGE_NAME }}:latest
+            ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
