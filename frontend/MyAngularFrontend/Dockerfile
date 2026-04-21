@@ -4,11 +4,12 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npx ng build --configuration production
+# Kényszerítjük a dist mappát almappák nélkül
+RUN npx ng build --configuration production --output-path=dist
 
 # 2. fázis: Runtime (Nginx)
 FROM nginx:stable-alpine
-# Az Angular 21 a dist/my-angular-frontend/browser mappába épít
-COPY --from=build /app/dist/my-angular-frontend/browser /usr/share/nginx/html
+# Az Angular 17+ a 'browser' almappába teszi a fájlokat a dist-en belül
+COPY --from=build /app/dist/browser /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
