@@ -1,16 +1,9 @@
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// elkerüli a redirect hibákat mert forceolvan van a szerver, hogy csak http-n figyeljen
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(8080); // Lokális teszthez a 8080-as portot fogja használni
-});
-
 var app = builder.Build();
 
-// Itt NINCS HTTPS redirection, így nem fog elszállni a böngészőben
+// Itt nincs szükség semmilyen OpenAPI vagy Swagger hívásra
 
 var mongoUri = Environment.GetEnvironmentVariable("MONGODB_URI") ?? "mongodb://localhost:27017";
 var mongoClient = new MongoClient(mongoUri);
@@ -20,14 +13,13 @@ var booksCollection = database.GetCollection<dynamic>("Books");
 app.MapGet("/api/inventory/count", async () => {
     try {
         var count = await booksCollection.CountDocumentsAsync(FilterDefinition<dynamic>.Empty);
-        return Results.Ok(new { count, service = "InventoryService-v1", status = "Működik!" });
+        return Results.Ok(new { count, service = "InventoryService-v1" });
     }
     catch (Exception ex) {
         return Results.Problem($"Adatbázis hiba: {ex.Message}");
     }
 });
 
-// Alapértelmezett útvonal, látható, hogy él-e a szerver
-app.MapGet("/", () => "Inventory Service fut!");
+app.MapGet("/", () => "Inventory Service fut (v1)");
 
 app.Run();
