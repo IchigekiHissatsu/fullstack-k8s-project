@@ -9,7 +9,7 @@ public class Book
     [BsonRepresentation(BsonType.ObjectId)]
     public string? Id { get; set; }
 
-    [BsonElement("Name")] // a DB-ben 'Name' lesz a mező neve
+    [BsonElement("Title")] // Így a DB-ben is 'Title' lesz, követve a C# property nevet
     public string Title { get; set; } = string.Empty;
 
     public string Author { get; set; } = string.Empty;

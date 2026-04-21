@@ -1,0 +1,23 @@
+@hostname = localhost
+@port = 3000
+@host = http://{{hostname}}:{{port}}
+
+### 1. Adatbázis kapcsolat ellenőrzése
+GET {{host}}/db-test
+
+###
+
+### 2. Összes könyv lekérése
+GET {{host}}/api/books
+
+###
+
+### 3. Új könyv hozzáadása
+POST {{host}}/api/books
+Content-Type: application/json
+
+{
+  "title": "A Gyűrűk Ura",
+  "author": "J.R.R. Tolkien",
+  "year": 1954
+}
