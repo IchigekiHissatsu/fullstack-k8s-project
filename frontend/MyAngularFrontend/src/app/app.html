@@ -1,5 +1,52 @@
-<div class="bg-blue-600 text-white p-10 text-center shadow-lg">
-  <h1 class="text-4xl font-bold italic">Tailwind Aktiválva! 🎉</h1>
-  <p class="mt-4 text-xl">Ez már a saját, tiszta projektünk.</p>
+<div class="min-h-screen bg-gray-100 p-8">
+  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
+    <h1 class="text-3xl font-bold text-blue-600 mb-6 border-b pb-2">Könyvtár Kezelő (K8s Project)</h1>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-gray-200 text-gray-700">
+            <th class="p-3 border">Cím</th>
+            <th class="p-3 border">Szerző</th>
+            <th class="p-3 border">Év</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (book of pagedBooks; track book.id) {
+            <tr class="hover:bg-gray-50 transition">
+              <td class="p-3 border text-gray-800">{{ book.title }}</td>
+              <td class="p-3 border text-gray-800">{{ book.author }}</td>
+              <td class="p-3 border text-gray-800">{{ book.year }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="3" class="p-8 text-center text-gray-500 italic">
+                Nincsenek könyvek a rendszerben, vagy a backend nem elérhető.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 flex justify-between items-center">
+      <button 
+        (click)="prevPage()" 
+        [disabled]="currentPage === 1" 
+        class="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition"
+      >
+        Előző
+      </button>
+      
+      <span class="font-semibold text-gray-700">Oldal: {{currentPage}}</span>
+      
+      <button 
+        (click)="nextPage()" 
+        [disabled]="(currentPage * pageSize) >= books.length"
+        class="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition"
+      >
+        Következő
+      </button>
+    </div>
+  </div>
 </div>
-<router-outlet />

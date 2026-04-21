@@ -1,5 +1,5 @@
 using MongoDB.Driver;
-using MyBackendAPI.Services; // Ez kell a BookService-hez
+using MyBackendAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,26 +10,35 @@ var mongoUri = Environment.GetEnvironmentVariable("MONGO_URI")
 builder.Services.AddSingleton<IMongoClient>(new MongoClient(mongoUri));
 builder.Services.AddScoped(sp => sp.GetRequiredService<IMongoClient>().GetDatabase("myappdb"));
 
-// --- 2. SERVICE-EK REGISZTRÁCIÓJA ---
-builder.Services.AddScoped<BookService>(); // A BookService regisztrálása
-builder.Services.AddControllers();         // A Controller-ek támogatása
+// --- 2. CORS BEÁLLÍTÁSA ---
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
-// Swagger és alapok
+// --- 3. SERVICEEK REGISZTRÁCIÓJA ---
+builder.Services.AddScoped<BookService>(); 
+builder.Services.AddControllers(); 
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// --- 3. MIDDLEWARE ÉS ÚTVONALAK ---
+// --- 4. MIDDLEWARE ÉS ÚTVONALAK ---
 
-// Swagger a teszthez
+app.UseCors();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// Ez mondja meg a .NET-nek, hogy keresse meg a Controllers mappában a BooksController-t
 app.MapControllers(); 
 
-// Egyszerű teszt végpontok (Minimal API stílusban)
 app.MapGet("/db-test", async (IMongoDatabase db) => {
     try {
         await db.RunCommandAsync((Command<MongoDB.Bson.BsonDocument>)"{ping:1}");
